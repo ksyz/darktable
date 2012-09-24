@@ -1254,13 +1254,19 @@ dt_iop_gui_reset_callback(GtkButton *button, dt_iop_module_t *module)
 static void
 _preset_popup_position(GtkMenu *menu, gint *x,gint *y,gboolean *push_in, gpointer data)
 {
-  gint w,h;
+  // unused-but-set-variable
+  // gint w,h;
   GtkRequisition requisition;
-  gdk_window_get_size(GTK_WIDGET(data)->window,&w,&h);
-  gdk_window_get_origin (GTK_WIDGET(data)->window, x, y);
-  gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
+  GtkWidget *widget = GTK_WIDGET(data);
+  // GdkWindow *window = gtk_widget_get_window(widget);
+  // w = gdk_window_get_width(window);
+  // h = gdk_window_get_height(window);
+  gdk_window_get_origin (gtk_widget_get_window(widget), x, y);
+  gtk_widget_size_request (GTK_WIDGET(menu), &requisition);
 
-  (*y)+=GTK_WIDGET(data)->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  (*y)+=allocation.height;
 }
 
 static void
@@ -1655,7 +1661,7 @@ GtkWidget *dt_iop_gui_get_expander(dt_iop_module_t *module)
   gtk_container_add(GTK_CONTAINER(pluginui), al);
   gtk_container_add(GTK_CONTAINER(al), iopw);
 
-  gtk_widget_hide_all(pluginui);
+  gtk_widget_hide(pluginui);
 
   module->expander = expander;
 
